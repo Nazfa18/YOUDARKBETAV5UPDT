@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>YOUDARK BETA V5</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@700;800&family=Inter:wght@600;800&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Inter',sans-serif;background:#0f0f0f;color:#fff}
+.fredoka{font-family:'Fredoka',sans-serif}
+.bounce{animation:bounce 1s infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+.glass{backdrop-filter:blur(20px);background:rgba(15,15,15,.92)}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+/* YOUDARK LUXURY BUTTON SYSTEM */
+.ybtn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  gap:.4rem;border:1px solid rgba(255,255,255,.10);
+  border-radius:999px;font-weight:800;letter-spacing:.01em;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease,background .16s ease;
+  box-shadow:0 5px 18px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08);
+  overflow:hidden;isolation:isolate;
+}
+.ybtn::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.14) 50%,transparent 80%);
+  transform:translateX(-130%);transition:transform .5s ease;
+}
+.ybtn:hover::before{transform:translateX(130%)}
+.ybtn:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 8px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.12)}
+.ybtn:active{transform:translateY(1px) scale(.98);box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.ybtn-red{background:linear-gradient(135deg,#ef233c,#b3001b);color:#fff;border-color:rgba(255,70,90,.45)}
+.ybtn-white{background:linear-gradient(135deg,#fff,#dcdcdc);color:#080808;border-color:#fff}
+.ybtn-dark{background:linear-gradient(135deg,#292929,#151515);color:#fff}
+.ybtn-gold{background:linear-gradient(135deg,#ffe66d,#f5a900);color:#171000;border-color:rgba(255,220,80,.55)}
+.ybtn-glass{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.045));color:#fff}
+.ybtn-icon{width:42px;height:42px;padding:0;border-radius:14px}
+.ybtn-sm{min-height:36px;padding:.55rem .9rem;font-size:.72rem}
+.ybtn-md{min-height:42px;padding:.65rem 1.05rem;font-size:.78rem}
+.ybtn-lg{min-height:48px;padding:.8rem 1.35rem;font-size:.9rem}
+.ybtn-wide{width:100%}
+.ybtn-label{display:inline-flex;align-items:center;gap:.35rem}
+.ybtn-danger{background:linear-gradient(135deg,#7f1d1d,#450a0a);color:#fff;border-color:rgba(239,68,68,.35)}
+.ybtn-green{background:linear-gradient(135deg,#16a34a,#075e2b);color:#fff}
+.ybtn-blue{background:linear-gradient(135deg,#2563eb,#123a9b);color:#fff}
+.ybtn:disabled{transform:none!important;filter:none!important}
+#player .action-row{display:flex;flex-wrap:wrap;gap:.5rem}
+#player .action-row .ybtn{flex:1 1 auto}
+@media(max-width:640px){
+ .ybtn-md{min-height:40px;padding:.58rem .8rem;font-size:.7rem}
+ .ybtn-lg{min-height:46px;padding:.7rem 1rem;font-size:.82rem}
+ .header-actions{width:100%;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+ .header-actions .ybtn{width:100%}
+}
+
+</style>
+</head>
+<body class="bg-[#0f0f0f] text-white">
+
+<div id="intro" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center text-center p-6">
+  <h1 class="bounce font-black text-[18vw] md:text-[9rem] leading-[.9] fredoka">
+    <span class="text-yellow-300">HELLO</span><br><span class="text-red-600">KIDZ</span>
+  </h1>
+  <p class="mt-2 text-white/40 text-xs tracking-[.5em]">BETA V5 • ADMIN 1M • BY SUPERN</p>
+  <button onclick="masuk()" class="ybtn ybtn-white ybtn-lg mt-6">MASUK BETA V5 ▶️</button>
+  <button onclick="resetTotal()" class="ybtn ybtn-glass ybtn-sm mt-3 text-white/35">Reset</button>
+</div>
+
+<div id="app" class="hidden">
+<header class="p-3 flex flex-col md:flex-row gap-3 justify-between items-center sticky top-0 glass z-20 border-b border-white/10">
+  <div class="flex items-center gap-4 w-full md:w-auto">
+    <div class="flex items-center gap-2">
+      <div class="bg-red-600 w-9 h-9 rounded-xl flex items-center justify-center font-black">▶</div>
+      <span class="fredoka font-black text-xl">YOU<span class="text-red-600">DARK</span></span>
+    </div>
+    <div class="flex flex-1 gap-2">
+      <input id="searchInput" oninput="searchVideo()" placeholder="Cari..." class="flex-1 bg-[#121212] border border-[#303030] rounded-l-full px-5 py-2.5 text-sm outline-none w-full md:w-[320px]">
+      <button onclick="searchVideo()" class="ybtn ybtn-dark h-[42px] px-6 rounded-r-full border-l-0 text-sm">🔍</button>
+      <span class="bg-[#1a1a1a] border border-yellow-400/20 px-3 py-2 rounded-full text-xs">🪙<span id="coin">0</span></span>
+    </div>
+  </div>
+  <div class="header-actions flex gap-1.5 items-center flex-wrap justify-center">
+    <span id="userInfo" class="hidden bg-[#1a1a1a] px-3 py-1.5 rounded-full text-[10px]"></span>
+    <button id="loginBtn" onclick="openLogin()" class="ybtn ybtn-white ybtn-sm">Login</button>
+    <button id="logoutBtn" onclick="logout()" class="ybtn hidden ybtn-dark ybtn-sm">Logout</button>
+    <button id="premBtn" onclick="premium()" class="ybtn ybtn-gold ybtn-sm">⭐ FREE 2 HARI</button>
+    <button onclick="askPin('yt')" class="ybtn ybtn-glass ybtn-sm">+ YT</button>
+    <button onclick="askPin('upload')" class="ybtn ybtn-red ybtn-sm">+ UPLOAD</button>
+  </div>
+</header>
+
+<div class="flex max-w-[1400px] mx-auto">
+<aside class="hidden lg:flex w-[220px] sticky top-[65px] h-[calc(100vh-65px)] flex-col p-3 gap-1 border-r border-white/5">
+  <button onclick="setFilter('all')" class="ybtn ybtn-white ybtn-md w-full justify-start !rounded-xl">🏠 Beranda</button>
+  <button onclick="setFilter('subs')" class="ybtn ybtn-glass ybtn-md w-full justify-start !rounded-xl">❤️ Langganan <span id="subCount" class="ml-auto bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full">0</span></button>
+  <button onclick="setFilter('liked')" class="ybtn ybtn-glass ybtn-md w-full justify-start !rounded-xl">👍 Disukai</button>
+  <button onclick="setFilter('history')" class="ybtn ybtn-glass ybtn-md w-full justify-start !rounded-xl">🕘 Riwayat</button>
+  <div class="mt-3 px-3 py-3 rounded-xl bg-gradient-to-br from-red-600/20 to-yellow-300/10 border border-red-600/30">
+    <div class="flex items-center gap-2">
+      <img src="https://i.pravatar.cc/100?img=33" class="w-9 h-9 rounded-full border-2 border-red-600">
+      <div><p class="font-black text-sm">ADMIN18 👑</p><p class="text-[11px] text-yellow-300">1.000.000 subs</p></div>
+    </div>
+  </div>
+</aside>
+
+<main class="flex-1 p-4">
+  <div id="adminPanel" class="hidden bg-red-900/30 border border-red-500/40 rounded-2xl p-3 mb-3 shadow-lg shadow-red-900/20">
+    <div class="flex items-center justify-between gap-2">
+      <div><p class="font-black text-xs text-red-400">👑 ADMIN TOOLS • ADMIN18</p><p class="text-[10px] text-white/40 mt-1">Khusus login ADMIN18</p></div>
+      <button onclick="openAdminTools()" class="ybtn ybtn-gold ybtn-sm">⚙️ ADMIN TOOLS</button>
+    </div>
+    <div class="flex flex-wrap gap-2 mt-3">
+      <button onclick="clearReports()" class="ybtn ybtn-gold ybtn-sm">Reset Laporan</button>
+      <button onclick="resetTotal()" class="ybtn ybtn-danger ybtn-sm">Reset Total</button>
+    </div>
+  </div>
+  <div id="premBanner" class="hidden bg-yellow-400 text-black rounded-xl p-3 mb-3 flex justify-between items-center">
+    <p class="font-black text-xs">⭐ PREMIUM AKTIF • Sisa <span id="premDay">2</span> hari</p>
+    <button onclick="batalPrem()" class="ybtn ybtn-dark ybtn-sm">Batal</button>
+  </div>
+  <div id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <p id="empty" class="text-center text-white/30 mt-20 hidden">Belum ada video</p>
+</main>
+</div>
+</div>
+
+<div id="player" class="fixed inset-0 bg-black hidden flex-col p-3 z-30 overflow-y-auto">
+  <div class="flex justify-between max-w-5xl mx-auto w-full mb-3">
+    <span class="fredoka font-black">YOU<span class="text-red-600">DARK</span></span>
+    <button onclick="closePlayer()" class="ybtn ybtn-glass ybtn-md">✕ Tutup</button>
+  </div>
+  <div class="max-w-5xl mx-auto w-full grid lg:grid-cols-[1fr_340px] gap-4">
+    <div>
+      <div class="aspect-video bg-black rounded-2xl overflow-hidden">
+        <iframe id="ytPlayer" class="w-full h-full hidden" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <video id="mainVideo" class="w-full h-full hidden" controls playsinline></video>
+      </div>
+      <h2 id="mainTitle" class="font-bold text-lg mt-4"></h2>
+      <div class="action-row mt-3">
+        <button id="likeBtn" onclick="toggleLike()" class="ybtn ybtn-glass ybtn-md">👍 Like <span id="likeCount">0</span></button>
+        <button onclick="reportVideo()" class="ybtn ybtn-glass ybtn-md">🚨 Laporkan</button>
+        <button onclick="saveVideo()" class="ybtn ybtn-glass ybtn-md">🔖 Simpan</button>
+      </div>
+
+      <div class="flex justify-between bg-[#1a1a1a] p-3 rounded-2xl mt-3">
+        <div class="flex gap-3">
+          <div id="channelIcon" class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black">A</div>
+          <div><p id="channelName" class="font-bold text-sm"></p><p id="channelSubs" class="text-[11px] text-white/50"></p></div>
+        </div>
+        <button id="subBtn" onclick="toggleSub()" class="ybtn ybtn-red ybtn-md">Subscribe</button>
+      </div>
+
+      <div class="mt-4 bg-[#1a1a1a] rounded-2xl p-4">
+        <p class="text-[11px] font-black">🤖 YOUDARK AI - BISA DITANYA <span id="aiVer" class="bg-[#272727] px-2 py-0.5 rounded-full text-[9px]">FREE</span></p>
+        <div class="flex gap-2 mt-3">
+          <input id="aiInput" onkeypress="if(event.key==='Enter')askAI()" placeholder="Tanya AI... contoh: ringkas video ini" class="flex-1 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none">
+          <button onclick="askAI()" class="ybtn ybtn-gold ybtn-md">TANYA</button>
+        </div>
+        <div class="flex gap-1 mt-2 flex-wrap">
+          <button onclick="quickAsk('ringkas video ini')" class="ybtn ybtn-glass ybtn-sm text-[10px]">📝 Ringkas</button>
+          <button onclick="quickAsk('buat chapter')" class="ybtn ybtn-glass ybtn-sm text-[10px]">📑 Chapter</button>
+          <button onclick="quickAsk('kenapa Indonesia juara 5-2?')" class="ybtn ybtn-glass ybtn-sm text-[10px]">🏆 Juara?</button>
+        </div>
+        <div id="aiBox" class="mt-3 bg-black p-4 rounded-xl text-sm border border-white/5 min-h-[60px]">Tanya apa aja...</div>
+      </div>
+
+      <div class="mt-4 bg-[#1a1a1a] rounded-2xl p-4">
+        <p class="font-black text-sm">💬 Komentar</p>
+        <div class="flex gap-2 mt-3">
+          <input id="commentInput" placeholder="Tulis komentar..." class="flex-1 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none">
+          <button onclick="addComment()" class="bg-white text-black px-5 rounded-full text-xs font-black">Kirim</button>
+        </div>
+        <div id="comments" class="mt-4 space-y-2"></div>
+      </div>
+    </div>
+    <div id="sideList" class="space-y-3"></div>
+  </div>
+</div>
+
+<div id="loginModal" class="hidden fixed inset-0 bg-black/90 z-[80] flex items-center justify-center p-4">
+  <div class="bg-[#1a1a1a] rounded-2xl p-6 w-full max-w-sm border border-white/10">
+    <h2 class="font-black text-center">LOGIN BETA V5<br><span class="text-[10px] text-white/40">ADMIN / AKUN DEMO</span></h2>
+    <input id="logUser" onkeydown="loginEnter(event)" autocomplete="username" placeholder="Username" class="w-full mt-4 bg-black border border-white/10 rounded-full px-4 py-3 text-sm">
+    <input id="logPass" onkeydown="loginEnter(event)" autocomplete="current-password" type="password" placeholder="Password" class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm">
+    <div class="flex gap-2 mt-4"><button onclick="doLogin()" class="ybtn ybtn-white ybtn-lg ybtn-wide">LOGIN</button><button onclick="doDaftar()" class="ybtn ybtn-dark ybtn-lg ybtn-wide">DAFTAR</button></div>
+    <button onclick="closeModal('loginModal')" class="ybtn ybtn-glass ybtn-sm ybtn-wide mt-3 text-white/45">Tutup</button>
+  </div>
+</div>
+
+<div id="adminToolsModal" class="hidden fixed inset-0 bg-black/95 z-[95] flex items-center justify-center p-4">
+  <div class="bg-[#151515] rounded-2xl p-5 w-full max-w-md border border-yellow-400/30 shadow-2xl">
+    <div class="flex items-center justify-between gap-3">
+      <div><h2 class="font-black text-lg">👑 ADMIN TOOLS</h2><p class="text-[10px] text-yellow-300/70 mt-1">LOGIN: ADMIN18</p></div>
+      <button onclick="closeModal('adminToolsModal')" class="ybtn ybtn-glass ybtn-icon">✕</button>
+    </div>
+
+    <div class="mt-4 bg-black/50 rounded-2xl p-4 border border-white/10">
+      <p class="font-black text-xs">👥 TAMBAH SUBSCRIBER ADMIN18</p>
+      <p id="adminSubsCurrent" class="text-[11px] text-white/40 mt-1">Subscriber saat ini: 1.000.000</p>
+      <div class="flex gap-2 mt-3">
+        <input id="adminAddSubs" type="number" min="1" step="1" placeholder="Jumlah yang ditambah" class="flex-1 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none">
+        <button onclick="adminAddSubscribers()" class="ybtn ybtn-gold ybtn-md">+ SUBS</button>
+      </div>
+    </div>
+
+    <div class="mt-3 bg-black/50 rounded-2xl p-4 border border-white/10">
+      <p class="font-black text-xs">🎬 EDIT VIDEO</p>
+      <select id="adminVideoSelect" onchange="loadAdminVideo()" class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none"></select>
+      <input id="adminVideoTitle" placeholder="Judul baru" class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none">
+      <input id="adminVideoThumb" placeholder="URL thumbnail baru" class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm outline-none">
+      <button onclick="adminSaveVideo()" class="ybtn ybtn-red ybtn-lg ybtn-wide mt-3">💾 SIMPAN PERUBAHAN</button>
+    </div>
+
+    <p class="text-[10px] text-white/30 mt-3 text-center">Perubahan tersimpan di browser ini (localStorage).</p>
+  </div>
+</div>
+
+<div id="pinModal" class="hidden fixed inset-0 bg-black/90 z-[60] flex items-center justify-center p-4">
+  <div class="bg-[#1a1a1a] rounded-2xl p-5 w-full max-w-sm border border-white/10 text-center">
+    <h2 class="font-black">🔒 PIN</h2>
+    <input id="pinInput" type="password" maxlength="4" inputmode="numeric" placeholder="****" class="w-full mt-4 bg-black border border-white/20 rounded-full py-3 text-center text-xl tracking-[.6em]">
+    <div class="flex gap-2 mt-4"><button onclick="closeModal('pinModal')" class="ybtn ybtn-dark ybtn-lg ybtn-wide">Batal</button><button onclick="cekPin()" class="ybtn ybtn-gold ybtn-lg ybtn-wide">BUKA</button></div>
+  </div>
+</div>
+
+<div id="ytModal" class="hidden fixed inset-0 bg-black/80 z-[55] flex items-center justify-center p-4">
+  <div class="bg-[#1a1a1a] rounded-2xl p-5 w-full max-w-md border border-white/10">
+    <h2 class="font-black">Tempel Link YouTube</h2>
+    <input id="ytInput" placeholder="https://youtu.be/..." class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm">
+    <input id="ytTitle" placeholder="Judul video (opsional)" class="w-full mt-3 bg-black border border-white/10 rounded-full px-4 py-3 text-sm">
+    <div class="flex gap-2 mt-4"><button onclick="closeModal('ytModal')" class="ybtn ybtn-dark ybtn-lg ybtn-wide">Batal</button><button onclick="addYT()" class="ybtn ybtn-red ybtn-lg ybtn-wide">Tambah</button></div>
+  </div>
+</div>
+
+<div id="warnModal" class="hidden fixed inset-0 bg-black/90 z-[50] flex items-center justify-center p-4">
+  <div class="bg-[#1a1a1a] rounded-2xl p-6 w-full max-w-sm border-2 border-red-600 text-center">
+    <h2 class="font-black text-red-500">PERINGATAN!</h2>
+    <p class="text-sm mt-2">JANGAN UPLOAD SEMBARANGAN!</p>
+    <div class="flex gap-2 mt-5"><button onclick="closeModal('warnModal')" class="ybtn ybtn-dark ybtn-lg ybtn-wide">BATAL</button><button onclick="confirmWarn()" class="flex-1 bg-red-600 py-3 rounded-full font-black">SETUJU</button></div>
+  </div>
+</div>
+
+<div id="ytSubModal" class="hidden fixed inset-0 bg-black/90 z-[90] flex items-center justify-center p-4">
+  <div class="bg-[#1a1a1a] rounded-2xl p-6 w-full max-w-sm border border-yellow-400/30 text-center">
+    <div class="text-4xl">⭐</div>
+    <h2 class="font-black text-lg mt-2">TRIAL PREMIUM HABIS</h2>
+    <p class="text-xs text-white/50 mt-2">Masa percobaan Premium kamu sudah 2 hari. Untuk melanjutkan akses Premium, subscribe channel YouTube resmi YOUDARK/NazGaming.</p>
+    <button onclick="openYTChannel()" class="w-full mt-4 bg-red-600 py-3 rounded-full font-black text-sm">▶ SUBSCRIBE DI YOUTUBE</button>
+    <label class="flex gap-2 items-start text-left mt-4 bg-black rounded-xl p-3 text-xs">
+      <input id="ytSubCheck" type="checkbox" class="mt-0.5">
+      <span>Saya sudah subscribe channel YouTube tersebut.</span>
+    </label>
+    <button onclick="confirmYTSubscribe()" class="ybtn ybtn-gold ybtn-lg ybtn-wide">LANJUTKAN PREMIUM</button>
+    <button onclick="closeModal('ytSubModal')" class="mt-3 text-[11px] text-white/30">Tutup</button>
+  </div>
+</div>
+<input id="fileInput" type="file" accept="video/*" multiple hidden>
+
+<script>
+const ADMIN_USER="ADMIN18";
+const ADMIN_PASS="18082014";
+
+let defaultVideos=[
+{id:'1',ytId:'XqZsoesa55c',title:'INDONESIA JUARA 5-2! Final vs Thailand Highlight GBK',channel:'ADMIN18',subs:'1.000.000',thumb:'https://img.youtube.com/vi/XqZsoesa55c/hqdefault.jpg',likes:2100,reports:0,verified:true,views:'2,1 jt'},
+{id:'2',ytId:'kJQP7kiw5Fk',title:'Reaksi GBK Pecah! Penalti Penentu Garuda Juara',channel:'ADMIN18',subs:'1.000.000',thumb:'https://img.youtube.com/vi/kJQP7kiw5Fk/hqdefault.jpg',likes:1400,reports:0,verified:true,views:'1,4 jt'},
+{id:'3',ytId:'RgKAFK5djSk',title:'Mitchell Baker 5 Gol vs Bangladesh 9-2',channel:'Timnas Indonesia',subs:'3,2 jt',thumb:'https://img.youtube.com/vi/RgKAFK5djSk/hqdefault.jpg',likes:890,reports:0,verified:true,views:'890 rb'},
+{id:'4',ytId:'9bZkp7q19f0',title:'MotoGP Mandalika 2026 - Marquez vs Bagnaia',channel:'MotoGP Official',subs:'5,1 jt',thumb:'https://img.youtube.com/vi/9bZkp7q19f0/hqdefault.jpg',likes:3300,reports:0,verified:true,views:'3,3 jt'},
+{id:'5',ytId:'CevxZvSJLk8',title:'Bali United vs Persijap - Prediksi 10 Okt',channel:'ADMIN18',subs:'1.000.000',thumb:'https://img.youtube.com/vi/CevxZvSJLk8/hqdefault.jpg',likes:320,reports:0,verified:true,views:'320 rb'},
+{id:'6',ytId:'fRh_vgS2dFE',title:'PSIM vs Persija - Sultan Agung Penuh',channel:'Liga Super ID',subs:'890 rb',thumb:'https://img.youtube.com/vi/fRh_vgS2dFE/hqdefault.jpg',likes:410,reports:0,verified:true,views:'410 rb'},
+{id:'7',ytId:'k85mRPqvMbE',title:'Tutorial Hosting YOUDARK',channel:'ADMIN18',subs:'1.000.000',thumb:'https://img.youtube.com/vi/k85mRPqvMbE/hqdefault.jpg',likes:102,reports:0,verified:true,views:'102 rb'},
+{id:'8',ytId:'uelHwf8o7_U',title:'Eminem - Love The Way You Lie',channel:'EminemMusic',subs:'60 jt',thumb:'https://img.youtube.com/vi/uelHwf8o7_U/hqdefault.jpg',likes:2900,reports:0,verified:true,views:'2,9 M'},
+{id:'9',ytId:'JGwWNGJdvx8',title:'Ed Sheeran - Shape of You',channel:'Ed Sheeran',subs:'54 jt',thumb:'https://img.youtube.com/vi/JGwWNGJdvx8/hqdefault.jpg',likes:6200,reports:0,verified:true,views:'6,2 M'},
+{id:'10',ytId:'020g-0hhCAU',title:'Baby Shark Dance',channel:'ADMIN18',subs:'1.000.000',thumb:'https://img.youtube.com/vi/020g-0hhCAU/hqdefault.jpg',likes:540,reports:0,verified:true,views:'12 jt'}
+];
+
+let videos=loadJSON('youdark_v6',null)||defaultVideos;
+let subs=loadJSON('subs_v6',[]);
+let liked=loadJSON('liked_v6',[]);
+let saved=loadJSON('saved_v6',[]);
+let history=loadJSON('history_v6',[]);
+let comments=loadJSON('comments_v6',{});
+let userLikes=loadJSON('userlikes_v6',{});
+let filter='all',currentChannel='',currentTitle='',currentId='',searchQuery='';
+let coins=parseInt(localStorage.getItem('coins_v6')||'0',10);
+let pin=localStorage.getItem('pin_v6')||'1234';
+let pending='';
+let currentUser=loadJSON('user_v6',null);
+// Migrasi sesi Beta V5 agar akun lama tetap bisa masuk.
+if(!currentUser){currentUser=loadJSON('user_beta_v5',null)}
+
+function loadJSON(key,fallback){try{const x=localStorage.getItem(key);return x?JSON.parse(x):fallback}catch(e){return fallback}}
+function saveAll(){
+ localStorage.setItem('youdark_v6',JSON.stringify(videos));
+ localStorage.setItem('subs_v6',JSON.stringify(subs));
+ localStorage.setItem('liked_v6',JSON.stringify(liked));
+ localStorage.setItem('saved_v6',JSON.stringify(saved));
+ localStorage.setItem('history_v6',JSON.stringify(history));
+ localStorage.setItem('comments_v6',JSON.stringify(comments));
+ localStorage.setItem('userlikes_v6',JSON.stringify(userLikes));
+ localStorage.setItem('coins_v6',coins);
+}
+function masuk(){
+ const i=document.getElementById('intro');
+ i.style.transition='.6s';i.style.transform='scale(1.2)';i.style.opacity='0';
+ setTimeout(()=>{i.classList.add('hidden');document.getElementById('app').classList.remove('hidden')},500);
+}
+function resetTotal(){
+ if(!confirm('Reset semua data YOUDARK di browser ini?'))return;
+ ['youdark_v6','subs_v6','liked_v6','saved_v6','history_v6','comments_v6','userlikes_v6','coins_v6','prem_v6','user_v6','users_v6'].forEach(k=>localStorage.removeItem(k));
+ location.reload();
+}
+function isAdmin(){return !!(currentUser&&currentUser.username===ADMIN_USER)}
+function isPrem(){
+ if(isAdmin())return{left:99,admin:true};
+ const p=loadJSON('prem_v6',null);
+ if(!p)return false;
+ const days=(Date.now()-p.start)/86400000;
+ if(days>=2){
+   localStorage.removeItem('prem_v6');
+   localStorage.setItem('prem_expired_v6','1');
+   return false;
+ }
+ return{left:Math.max(1,Math.ceil(2-days))};
+}
+function ui(){
+ document.getElementById('coin').innerText=coins;
+ const pr=isPrem(),admin=isAdmin();
+ document.getElementById('adminPanel').classList.toggle('hidden',!admin);
+ document.getElementById('premBanner').classList.toggle('hidden',!pr||admin);
+ document.getElementById('subCount').innerText=subs.length;
+ document.getElementById('aiVer').innerText=admin?'ADMIN 1M 👑':pr?'PREMIUM ⭐':'FREE';
+ document.getElementById('premBtn').innerText=admin?'👑 ADMIN 1M':pr?'⭐ '+pr.left+' HARI':(localStorage.getItem('prem_expired_v6')==='1'?'🔒 SUBSCRIBE YT':'⭐ FREE 2 HARI');
+ if(pr&&!admin)document.getElementById('premDay').innerText=pr.left;
+ if(currentUser){
+   document.getElementById('userInfo').innerText=(admin?'👑 ':'')+currentUser.username;
+   document.getElementById('userInfo').classList.remove('hidden');
+   document.getElementById('loginBtn').classList.add('hidden');
+   document.getElementById('logoutBtn').classList.remove('hidden');
+ }else{
+   document.getElementById('userInfo').classList.add('hidden');
+   document.getElementById('loginBtn').classList.remove('hidden');
+   document.getElementById('logoutBtn').classList.add('hidden');
+ }
+}
+function setFilter(f){filter=f;render()}
+function render(){
+ let list=videos.filter(v=>v.reports<3);
+ if(filter==='subs')list=list.filter(v=>subs.includes(v.channel));
+ if(filter==='liked')list=list.filter(v=>liked.includes(String(v.id)));
+ if(filter==='history')list=list.filter(v=>history.includes(String(v.id)));
+ if(searchQuery)list=list.filter(v=>(v.title||'').toLowerCase().includes(searchQuery)||(v.channel||'').toLowerCase().includes(searchQuery));
+ const grid=document.getElementById('grid');grid.innerHTML='';
+ document.getElementById('empty').classList.toggle('hidden',list.length>0);
+ list.forEach(v=>{
+   const isSub=subs.includes(v.channel),isAdminChan=v.channel==='ADMIN18';
+   const thumb=v.thumb||'https://placehold.co/640x360/181818/ffffff?text=YOUDARK';
+   grid.innerHTML+=`
+   <div class="bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/5">
+    <div onclick="playVideo('${escapeAttr(v.id)}')" class="cursor-pointer relative">
+     <img src="${thumb}" class="w-full aspect-video object-cover" onerror="this.src='https://placehold.co/640x360/181818/ffffff?text=YOUDARK'">
+     <span class="absolute top-2 left-2 bg-black/70 text-[8px] px-2 py-1 rounded-full">${isAdminChan?'ADMIN18 1M':'BY SUPERN'}</span>
+     ${v.verified?'<span class="absolute top-2 right-2 bg-blue-500 text-white text-[8px] px-1.5 py-0.5 rounded-full">✓</span>':''}
+     <span class="absolute bottom-2 right-2 bg-black/80 text-[10px] px-2 py-1 rounded-full">${v.views||'0'} • ❤️ ${v.likes||0}</span>
+    </div>
+    <div class="p-3">
+     <p class="font-bold text-[13px] line-clamp-2">${escapeHTML(v.title||'Tanpa judul')}</p>
+     <p class="text-[11px] text-white/50 mt-1">${escapeHTML(v.channel||'User')} ${isAdminChan?'<span class="bg-red-600 text-white text-[8px] px-1.5 rounded-full">1M</span>':''} ${v.verified?'✔️':''}</p>
+     <p class="text-[11px] text-white/30">${escapeHTML(v.subs||'0')} subs ${isSub?'• ✓ Langganan':''}</p>
+     <div class="flex gap-1 mt-2">
+      <button onclick="playVideo('${escapeAttr(v.id)}')" class="ybtn ${isAdminChan?'ybtn-red':'ybtn-white'} ybtn-sm flex-1">▶ TONTON</button>
+      <button onclick="quickSub('${escapeAttr(v.channel)}')" class="ybtn ${isSub?'ybtn-white':'ybtn-dark'} ybtn-sm px-3">${isSub?'✓ Subs':'Subscribe'}</button>
+     </div>
+    </div>
+   </div>`;
+ });
+}
+function searchVideo(){searchQuery=document.getElementById('searchInput').value.trim().toLowerCase();render()}
+function openLogin(){document.getElementById('loginModal').classList.remove('hidden')}
+function closeModal(id){document.getElementById(id).classList.add('hidden')}
+function doLogin(){
+ const userEl=document.getElementById('logUser'),passEl=document.getElementById('logPass');
+ const u=(userEl.value||'').trim(),p=(passEl.value||'').trim();
+ if(!u||!p)return alert('Isi username & password dulu!');
+ const uname=u.toUpperCase();
+ // Admin login dibuat lebih toleran: username tidak sensitif huruf besar/kecil.
+ if(uname===ADMIN_USER&&p===ADMIN_PASS){
+   currentUser={username:ADMIN_USER,isAdmin:true};
+   localStorage.setItem('user_v6',JSON.stringify(currentUser));
+   localStorage.setItem('user_beta_v5',JSON.stringify(currentUser));
+   closeModal('loginModal');ui();render();
+   return alert('👑 LOGIN ADMIN18 BERHASIL!');
+ }
+ let users=loadJSON('users_v6',null);
+ if(!users||typeof users!=='object'||Array.isArray(users))users={};
+ // Cari username tanpa membedakan huruf besar/kecil.
+ const key=Object.keys(users).find(k=>k.toLowerCase()===u.toLowerCase());
+ if(key&&String(users[key])===p){
+   currentUser={username:key};
+   localStorage.setItem('user_v6',JSON.stringify(currentUser));
+   localStorage.setItem('user_beta_v5',JSON.stringify(currentUser));
+   closeModal('loginModal');ui();render();
+   return alert('✅ Login berhasil!');
+ }
+ alert('❌ Username atau password salah. Kalau belum punya akun, tekan DAFTAR.');
+}
+function loginEnter(e){if(e.key==='Enter')doLogin()}
+function doDaftar(){
+ const u=document.getElementById('logUser').value.trim(),p=document.getElementById('logPass').value.trim();
+ if(u.length<3)return alert('Username minimal 3 karakter');
+ if(p.length<4)return alert('Password minimal 4 karakter');
+ if(u.toUpperCase()===ADMIN_USER)return alert('Username ADMIN18 reserved!');
+ const users=loadJSON('users_v6',{});
+ if(users[u])return alert('Username sudah ada!');
+ users[u]=p;localStorage.setItem('users_v6',JSON.stringify(users));
+ currentUser={username:u};localStorage.setItem('user_v6',JSON.stringify(currentUser));localStorage.setItem('user_beta_v5',JSON.stringify(currentUser));
+ closeModal('loginModal');ui();render();alert('Daftar berhasil!');
+}
+function logout(){
+ if(!confirm('Logout?'))return;
+ currentUser=null;localStorage.removeItem('user_v6');localStorage.removeItem('user_beta_v5');ui();render();
+}
+function adminOnly(){
+ if(!isAdmin()){alert('🔒 ADMIN TOOLS hanya untuk ADMIN18.');return false}
+ return true;
+}
+function parseSubsNumber(value){
+ const n=String(value||'0').replace(/[^0-9]/g,'');
+ return parseInt(n||'0',10);
+}
+function formatSubsNumber(n){
+ n=Math.max(0,Math.floor(Number(n)||0));
+ if(n>=1000000)return (n/1000000).toLocaleString('id-ID',{maximumFractionDigits:1})+' jt';
+ if(n>=1000)return (n/1000).toLocaleString('id-ID',{maximumFractionDigits:1})+' rb';
+ return n.toLocaleString('id-ID');
+}
+function getAdminSubs(){
+ const saved=localStorage.getItem('admin18_subs_v5');
+ if(saved!==null)return parseSubsNumber(saved);
+ const first=videos.find(v=>v.channel==='ADMIN18');
+ return parseSubsNumber(first?.subs)||1000000;
+}
+function setAdminSubs(n){
+ const total=Math.max(0,Math.floor(Number(n)||0));
+ localStorage.setItem('admin18_subs_v5',String(total));
+ videos.forEach(v=>{if(v.channel==='ADMIN18')v.subs=formatSubsNumber(total)});
+ saveAll();
+}
+function openAdminTools(){
+ if(!adminOnly())return;
+ document.getElementById('adminSubsCurrent').innerText='Subscriber saat ini: '+formatSubsNumber(getAdminSubs());
+ const sel=document.getElementById('adminVideoSelect');
+ sel.innerHTML=videos.map(v=>`<option value="${escapeAttr(v.id)}">${escapeHTML(v.title||'Tanpa judul')}</option>`).join('');
+ loadAdminVideo();
+ document.getElementById('adminToolsModal').classList.remove('hidden');
+}
+function loadAdminVideo(){
+ const id=document.getElementById('adminVideoSelect').value;
+ const v=videos.find(x=>String(x.id)===String(id));
+ if(!v)return;
+ document.getElementById('adminVideoTitle').value=v.title||'';
+ document.getElementById('adminVideoThumb').value=v.thumb||'';
+}
+function adminAddSubscribers(){
+ if(!adminOnly())return;
+ const amount=parseInt(document.getElementById('adminAddSubs').value,10);
+ if(!Number.isFinite(amount)||amount<=0)return alert('Masukkan jumlah subscriber yang valid.');
+ const total=getAdminSubs()+amount;
+ setAdminSubs(total);
+ document.getElementById('adminSubsCurrent').innerText='Subscriber saat ini: '+formatSubsNumber(total);
+ document.getElementById('adminAddSubs').value='';
+ render();ui();
+ alert('🔥 Subscriber ADMIN18 bertambah '+amount.toLocaleString('id-ID')+'!\nTotal: '+formatSubsNumber(total));
+}
+function adminSaveVideo(){
+ if(!adminOnly())return;
+ const id=document.getElementById('adminVideoSelect').value;
+ const v=videos.find(x=>String(x.id)===String(id));
+ if(!v)return alert('Video tidak ditemukan.');
+ const title=document.getElementById('adminVideoTitle').value.trim();
+ const thumb=document.getElementById('adminVideoThumb').value.trim();
+ if(title)v.title=title;
+ if(thumb)v.thumb=thumb;
+ saveAll();render();ui();
+ closeModal('adminToolsModal');
+ alert('✅ Judul/thumbnail berhasil diperbarui!');
+}
+function askPin(t){pending=t;document.getElementById('pinInput').value='';document.getElementById('pinModal').classList.remove('hidden')}
+function cekPin(){
+ if(document.getElementById('pinInput').value!==pin)return alert('PIN salah!');
+ closeModal('pinModal');
+ if(pending==='yt')document.getElementById('ytModal').classList.remove('hidden');
+ if(pending==='upload')document.getElementById('warnModal').classList.remove('hidden');
+}
+function closeWarn(){closeModal('warnModal')}
+function confirmWarn(){closeWarn();if(!currentUser){alert('Login dulu!');openLogin();return}document.getElementById('fileInput').click()}
+function getId(u){
+ try{
+   const x=new URL(u);
+   if(x.hostname.includes('youtu.be'))return x.pathname.slice(1).split('/')[0];
+   if(x.hostname.includes('youtube.com'))return x.searchParams.get('v')||x.pathname.split('/').filter(Boolean).pop();
+ }catch(e){}
+ const m=u.match(/(?:v=|youtu\.be\/|shorts\/)([^&?\/]+)/);
+ return m?m[1]:null;
+}
+function addYT(){
+ if(!currentUser)return alert('Login dulu!');
+ const url=document.getElementById('ytInput').value.trim(),id=getId(url);
+ if(!id)return alert('Link YouTube salah!');
+ const title=document.getElementById('ytTitle').value.trim()||'YouTube '+id;
+ videos.unshift({
+   id:'yt_'+Date.now(),title,channel:currentUser.username,
+   subs:isAdmin()?'1.000.000':'100',ytId:id,
+   thumb:`https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+   likes:0,reports:0,verified:isAdmin(),views:'0'
+ });
+ coins+=10;saveAll();closeModal('ytModal');
+ document.getElementById('ytInput').value='';document.getElementById('ytTitle').value='';
+ render();ui();alert('Video YouTube ditambahkan!');
+}
+document.getElementById('fileInput').addEventListener('change',async e=>{
+ if(!currentUser)return alert('Login dulu!');
+ for(const f of e.target.files){
+   const url=URL.createObjectURL(f);
+   const thumb=await makeVideoThumbnail(url);
+   videos.unshift({
+     id:'local_'+Date.now()+'_'+Math.random().toString(36).slice(2),
+     title:f.name.replace(/\.[^/.]+$/,''),
+     url,channel:currentUser.username,subs:isAdmin()?'1.000.000':'100',
+     likes:0,reports:0,verified:isAdmin(),thumb,views:'0',ytId:null,
+     local:true,fileName:f.name
+   });
+   coins+=20;
+ }
+ saveAll();render();ui();e.target.value='';
+ alert('Video berhasil ditambahkan. Video lokal hanya tersedia selama halaman/browser ini mempertahankan object URL.');
+});
+function makeVideoThumbnail(url){
+ return new Promise(resolve=>{
+   const v=document.createElement('video');v.src=url;v.muted=true;v.playsInline=true;
+   v.addEventListener('loadeddata',()=>{
+     v.currentTime=Math.min(1,v.duration||1);
+   });
+   v.addEventListener('seeked',()=>{
+     const c=document.createElement('canvas');c.width=640;c.height=360;
+     const ctx=c.getContext('2d');ctx.drawImage(v,0,0,c.width,c.height);
+     resolve(c.toDataURL('image/jpeg',.75));URL.revokeObjectURL(url);
+   });
+   v.addEventListener('error',()=>resolve('https://placehold.co/640x360/181818/ffffff?text=VIDEO'));
+ });
+}
+function playVideo(id){
+ const v=videos.find(x=>String(x.id)===String(id));if(!v)return;
+ currentId=v.id;currentChannel=v.channel;currentTitle=v.title;
+ document.getElementById('player').classList.remove('hidden');document.getElementById('player').classList.add('flex');
+ const yt=document.getElementById('ytPlayer'),vid=document.getElementById('mainVideo');
+ if(v.ytId){
+   vid.pause();vid.removeAttribute('src');vid.classList.add('hidden');
+   yt.classList.remove('hidden');yt.src=`https://www.youtube.com/embed/${encodeURIComponent(v.ytId)}?autoplay=1&rel=0`;
+ }else if(v.url){
+   yt.classList.add('hidden');yt.src='';
+   vid.classList.remove('hidden');vid.src=v.url;vid.play().catch(()=>{});
+ }
+ v.views=incrementView(v.views);
+ history=[String(v.id),...history.filter(x=>x!==String(v.id))].slice(0,30);
+ saveAll();
+ document.getElementById('mainTitle').innerText=v.title;
+ document.getElementById('channelName').innerHTML=escapeHTML(v.channel)+(v.channel==='ADMIN18'?' <span class="bg-red-600 text-white text-[8px] px-1 rounded-full">1M</span>':'')+(v.verified?' ✔️':'');
+ document.getElementById('channelIcon').innerText=(v.channel||'A')[0].toUpperCase();
+ document.getElementById('channelSubs').innerText=(v.subs||'0')+' subscriber';
+ document.getElementById('likeCount').innerText=v.likes||0;
+ updateLikeBtn();updateSubBtn();renderComments();
+ document.getElementById('aiBox').innerHTML=`AI siap! Tanya tentang "${escapeHTML(v.title)}"`;
+ document.getElementById('sideList').innerHTML=videos.filter(x=>String(x.id)!==String(id)).slice(0,6).map(x=>`
+ <div class="flex gap-2 cursor-pointer hover:bg-white/5 p-2 rounded-xl" onclick="playVideo('${escapeAttr(x.id)}')">
+  <img src="${x.thumb||'https://placehold.co/160x90/181818/ffffff?text=VIDEO'}" class="w-24 h-14 rounded-xl object-cover">
+  <div><p class="text-xs font-bold line-clamp-2">${escapeHTML(x.title)}</p><p class="text-[10px] text-white/40">${escapeHTML(x.channel)}</p></div>
+ </div>`).join('');
+}
+function incrementView(v){
+ const s=String(v||'0');
+ if(/\d/.test(s)&&s==='0')return'1';
+ return s;
+}
+function closePlayer(){
+ document.getElementById('player').classList.add('hidden');
+ document.getElementById('ytPlayer').src='';
+ const v=document.getElementById('mainVideo');v.pause();v.removeAttribute('src');
+}
+function quickSub(ch){
+ if(!currentUser){alert('Login dulu!');openLogin();return}
+ if(subs.includes(ch))subs=subs.filter(s=>s!==ch);else{subs.push(ch);if(ch==='ADMIN18')alert('🔥 Subscribe ADMIN18!')}
+ saveAll();render();if(currentChannel===ch)updateSubBtn();ui();
+}
+function toggleSub(){quickSub(currentChannel)}
+function updateSubBtn(){
+ const is=subs.includes(currentChannel),b=document.getElementById('subBtn');
+ b.innerText=is?'✓ Berlangganan':'Subscribe '+(currentChannel==='ADMIN18'?'1M':'');
+ b.className=is?'px-6 py-2.5 rounded-full font-bold text-sm bg-white text-black':'px-6 py-2.5 rounded-full font-bold text-sm bg-red-600';
+}
+function toggleLike(){
+ if(!currentUser){alert('Login dulu untuk Like!');openLogin();return}
+ const v=videos.find(x=>String(x.id)===String(currentId));if(!v)return;
+ const key=String(v.id);
+ if(userLikes[key]){v.likes=Math.max(0,(v.likes||0)-1);delete userLikes[key];liked=liked.filter(x=>x!==key)}
+ else{v.likes=(v.likes||0)+1;userLikes[key]=true;if(!liked.includes(key))liked.push(key);coins+=1}
+ saveAll();document.getElementById('likeCount').innerText=v.likes;updateLikeBtn();ui();render();
+}
+function updateLikeBtn(){
+ const v=videos.find(x=>String(x.id)===String(currentId));if(!v)return;
+ const b=document.getElementById('likeBtn');b.innerHTML=(userLikes[String(v.id)]?'👍 Disukai ':'👍 Like ')+`<span>${v.likes||0}</span>`;
+}
+function saveVideo(){
+ if(!currentUser){alert('Login dulu!');openLogin();return}
+ const id=String(currentId);
+ if(saved.includes(id)){saved=saved.filter(x=>x!==id);alert('Dihapus dari simpanan!')}
+ else{saved.unshift(id);saved=saved.slice(0,50);alert('Video disimpan!')}
+ saveAll();
+}
+function reportVideo(){
+ const v=videos.find(x=>String(x.id)===String(currentId));if(!v)return;
+ if(!confirm('Laporkan video ini?'))return;
+ v.reports=(v.reports||0)+1;saveAll();
+ alert(v.reports>=3?'Video mencapai 3 laporan dan disembunyikan.':'Laporan diterima.');
+ closePlayer();render();
+}
+function addComment(){
+ if(!currentUser){alert('Login dulu untuk komentar!');openLogin();return}
+ const text=document.getElementById('commentInput').value.trim();if(!text)return;
+ if(!comments[String(currentId)])comments[String(currentId)]=[];
+ comments[String(currentId)].unshift({user:currentUser.username,text,time:new Date().toLocaleString('id-ID')});
+ document.getElementById('commentInput').value='';saveAll();renderComments();
+}
+function renderComments(){
+ const list=comments[String(currentId)]||[],box=document.getElementById('comments');
+ box.innerHTML=list.length?list.map((c,i)=>`
+ <div class="bg-black rounded-xl p-3">
+  <p class="text-xs font-black">${escapeHTML(c.user)} <span class="text-white/30 font-normal">${escapeHTML(c.time)}</span></p>
+  <p class="text-sm mt-1">${escapeHTML(c.text)}</p>
+  ${currentUser&&currentUser.username===c.user?`<button onclick="deleteComment(${i})" class="text-[10px] text-red-400 mt-2">Hapus</button>`:''}
+ </div>`).join(''):'<p class="text-xs text-white/30">Belum ada komentar.</p>';
+}
+function deleteComment(i){
+ const a=comments[String(currentId)]||[];a.splice(i,1);comments[String(currentId)]=a;saveAll();renderComments();
+}
+function clearReports(){videos.forEach(v=>v.reports=0);saveAll();render();alert('Semua laporan direset!')}
+function premium(){
+ const pr=isPrem();
+ if(pr)return alert('Premium aktif sisa '+pr.left+' hari');
+ if(localStorage.getItem('prem_expired_v6')==='1'){
+   document.getElementById('ytSubCheck').checked=false;
+   document.getElementById('ytSubModal').classList.remove('hidden');
+   return;
+ }
+ if(confirm('Aktifkan PREMIUM 2 HARI FREE?')){
+   localStorage.setItem('prem_v6',JSON.stringify({start:Date.now()}));
+   ui();alert('⭐ Premium aktif selama 2 hari!');
+ }
+}
+function openYTChannel(){
+ window.open('https://youtube.com/@nazgaming18','_blank','noopener,noreferrer');
+}
+function confirmYTSubscribe(){
+ if(!document.getElementById('ytSubCheck').checked)
+   return alert('Kamu harus subscribe channel YouTube dulu.');
+ // Browser biasa tidak dapat memverifikasi status subscribe YouTube secara aman tanpa YouTube API/login OAuth.
+ localStorage.setItem('yt_sub_confirmed_v6','1');
+ localStorage.removeItem('prem_expired_v6');
+ localStorage.setItem('prem_v6',JSON.stringify({start:Date.now()}));
+ closeModal('ytSubModal');
+ ui();
+ alert('⭐ Premium aktif lagi selama 2 hari!');
+}
+function batalPrem(){if(isAdmin())return alert('Admin permanen');if(confirm('Batalkan premium?')){localStorage.removeItem('prem_v6');ui()}}
+function smartAI(q,title){
+ const l=q.toLowerCase(),t=title.toLowerCase();
+ if(l.includes('ringkas')||l.includes('rangkum')){
+   if(t.includes('juara')||t.includes('thailand'))return`📝 RINGKASAN: ${title}. Ini adalah ringkasan demo YOUDARK berdasarkan judul video. AI lokal ini belum membaca isi video secara langsung.`;
+   return`📝 RINGKASAN: ${title} - Channel ${currentChannel}. Untuk AI yang benar-benar membaca video, diperlukan backend/API AI.`;
+ }
+ if(l.includes('chapter'))return`📑 CHAPTER DEMO: 00:00 Intro<br>01:00 Bagian utama<br>03:00 Puncak<br>05:00 Outro`;
+ if(l.includes('juara')||l.includes('5-2'))return`🏆 Pertanyaan ini memakai data demo yang ada di YOUDARK.`;
+ if(l.includes('admin18')||l.includes('1m'))return`👑 ADMIN18 adalah channel demo dengan 1.000.000 subscriber.`;
+ return`🤖 AI DEMO: Lu nanya "${escapeHTML(q)}" tentang "${escapeHTML(title)}".`;
+}
+function askAI(){
+ const q=document.getElementById('aiInput').value.trim();if(!q)return;
+ const box=document.getElementById('aiBox');box.innerHTML=`Lu: ${escapeHTML(q)}<br><br>⏳ mikir...`;
+ setTimeout(()=>{box.innerHTML=`<div class="text-white/60 text-xs">Lu: ${escapeHTML(q)}</div><div class="mt-2 bg-yellow-300/5 border border-yellow-300/10 p-3 rounded-xl">${smartAI(q,currentTitle)}</div>`},500);
+ document.getElementById('aiInput').value='';
+}
+function quickAsk(t){document.getElementById('aiInput').value=t;askAI()}
+function gantiPin(){
+ if(!isAdmin())return alert('Hanya admin!');
+ const n=prompt('Ganti PIN 4 digit:',pin);
+ if(n&&/^\\d{4}$/.test(n)){pin=n;localStorage.setItem('pin_v6',pin);alert('PIN berhasil diganti!')}
+}
+function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function escapeAttr(s){return String(s??'').replace(/'/g,"&#039;")}
+render();ui();
+</script>
+</body>
+</html>
